@@ -4,6 +4,8 @@
 
 # The "Vehicle" class
 
+from Coin import Coin
+
 class Vehicle():
 
     def __init__(self, x, y):
@@ -11,7 +13,7 @@ class Vehicle():
         self.velocity = PVector(0, -2)
         self.position = PVector(x, y)
         self.r = 6
-        self.maxspeed = 4
+        self.maxspeed = 8
         self.maxforce = 0.2
 
     # Method to update location
@@ -30,8 +32,8 @@ class Vehicle():
 
     # A method that calculates a steering force towards a target
     # STEER = DESIRED MINUS VELOCITY
-    def arrive(self, target):
-
+    def arrive(self, c, target, coins):
+        
         # A vector pointing from the location to the target
         desired = target - self.position
         d = desired.mag()
@@ -40,6 +42,8 @@ class Vehicle():
         if (d < 100):
             m = map(d, 0, 100, 0, self.maxspeed)
             desired.setMag(m)
+            if(d < 30):
+                coins = c.update(1280, 720, coins)
         else:
             desired.setMag(self.maxspeed)
 
@@ -48,12 +52,13 @@ class Vehicle():
         steer.limit(self.maxforce)  # Limit to maximum steering force
 
         self.applyForce(steer)
+        return coins
 
     def display(self):
         # Draw a triangle rotated in the direction of velocity
         theta = self.velocity.heading() + PI / 2
-        fill(255,0,0)
-        stroke(200)
+        fill(255, 255, 255)
+        stroke(0, 0, 0)
         strokeWeight(1)
         with pushMatrix():
             translate(self.position.x, self.position.y)
